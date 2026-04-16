@@ -18,11 +18,9 @@ job   = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
 # ── STEP 1: READ from Athena/Glue catalog ──────────────────────────────────
-# Replace 'your_database' and 'sales_analytics' with your actual Glue DB and table name
 dyf = glueContext.create_dynamic_frame.from_catalog(
-    database   = "my-sales-data-catalog-db",        # ← your Glue database name
-    table_name = "sales_analytics"       # ← the table Athena created
-)
+    database   = "my-sales-data-catalog-db",        
+    table_name = "sales_analytics"     
 df = dyf.toDF()
 
 print(">>> Raw row count:", df.count())
@@ -33,7 +31,6 @@ df = df.dropDuplicates(["order_id"])
 print(">>> After dedup:", df.count())
 
 # ── STEP 3: DROP unwanted / redundant columns ─────────────────────────────
-# Drop split name columns — customer_name already has the full name
 cols_to_drop = ["first_name", "last_name"]
 existing = [c for c in cols_to_drop if c in df.columns]
 df = df.drop(*existing)
@@ -55,7 +52,7 @@ df = df.withColumn("country",
 df = df.withColumn("sales",    spark_round(col("sales").cast("double"),   2))
 df = df.withColumn("revenue",  spark_round(col("revenue").cast("double"), 2))
 df = df.withColumn("order_date",
-        to_date(col("order_date"), "dd/MM/yyyy"))   # adjust format if needed
+        to_date(col("order_date"), "dd/MM/yyyy"))  
 
 # ── STEP 6: STANDARDISE text columns ─────────────────────────────────────
 df = df.withColumn("product_category", trim(upper(col("product_category"))))
@@ -81,13 +78,13 @@ df.printSchema()
 df.show(5)
 
 # ── STEP 9: WRITE to sales-analytics-processed folder ────────────────────
-output_dyf = DynamicFrame.fromDF(df, glueContext, "clean_Processed_data")  #Output data to load into Power BI
+output_dyf = DynamicFrame.fromDF(df, glueContext, "clean_Processed_data") 
 
 glueContext.write_dynamic_frame.from_options(
     frame              = output_dyf,
     connection_type    = "s3",
     connection_options = {
-        "path": "s3://de-csv-final-data/sales-analytics-processed/"  # ← your bucket
+        "path": "s3://de-csv-final-data/sales-analytics-processed/" 
     },
     format             = "parquet",
     format_options     = {"compression": "snappy"}
