@@ -12,7 +12,7 @@ The pipeline joins two datasets, cleans the data, enriches it with derived colum
 
 -----------------------------------
 **AWS Services Used**
-**AWS Services Used**
+
 **AWS Services Used**
 **AWS Services Used**
 **AWS Services Used**
