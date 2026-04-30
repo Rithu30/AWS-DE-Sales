@@ -10,8 +10,6 @@
 # AWS Serverless Sales Analytics Pipeline #
 # AWS Serverless Sales Analytics Pipeline #
 # AWS Serverless Sales Analytics Pipeline #
-# AWS Serverless Sales Analytics Pipeline #
-
 
 
 An end-to-end cloud data engineering project that ingests raw CSV sales data, processes and transforms it using AWS serverless services, queries it with Amazon Athena, and visualizes it through interactive Power BI dashboards.  
